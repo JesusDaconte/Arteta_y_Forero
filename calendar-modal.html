@@ -1,0 +1,76 @@
+<!-- Calendar Modal -->
+<div id="calendar-modal" class="modal hidden" aria-hidden="true">
+  <div class="modal-overlay" aria-hidden="true"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Agendar Consulta</h2>
+      <button class="modal-close" aria-label="Cerrar">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="calendar-header">
+        <div class="calendar-nav">
+          <button class="nav-btn prev" aria-label="Mes anterior">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <line x1="15" y1="12" x2="9" y2="18"></line>
+              <line x1="15" y1="12" x2="9" y2="6"></line>
+            </svg>
+          </button>
+          <div class="calendar-month-year">
+            <span class="month">April</span>
+            <span class="year">2026</span>
+          </div>
+          <button class="nav-btn next" aria-label="Mes siguiente">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <line x1="9" y1="12" x2="15" y2="18"></line>
+              <line x1="9" y1="12" x2="15" y2="6"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="calendar-weekdays">
+        <div class="weekday">Dom</div>
+        <div class="weekday">Lun</div>
+        <div class="weekday">Mar</div>
+        <div class="weekday">Mié</div>
+        <div class="weekday">Jue</div>
+        <div class="weekday">Vie</div>
+        <div class="weekday">Sáb</div>
+      </div>
+
+      <div class="calendar-days" id="calendar-days">
+      </div>
+
+      <div class="time-slots">
+        <h3 class="time-title">Horario disponible</h3>
+        <div class="time-grid" id="time-slots">
+        </div>
+      </div>
+
+      <div class="appointment-form">
+        <div class="form-group">
+          <label for="appt-name">Nombre completo *</label>
+          <input type="text" id="appt-name" placeholder="Su nombre completo" required>
+        </div>
+        <div class="form-group">
+          <label for="appt-email">Correo electrónico *</label>
+          <input type="email" id="appt-email" placeholder="su@correo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="appt-phone">Celular *</label>
+          <input type="tel" id="appt-phone" placeholder="+57 300 000 0000" required>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancel-btn">Cancelar</button>
+        <button class="btn-primary" id="confirm-btn">Confirmar cita</button>
+      </div>
+    </div>
+  </div>
+</div>
