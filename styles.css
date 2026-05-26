@@ -49,6 +49,44 @@ a, button, input, select, textarea {
   outline-offset: 3px;
 }
 
+/* ================================
+   ANIMATIONS
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Skip link para accesibilidad */
 .skip-link {
   position: absolute;
@@ -352,6 +390,22 @@ h1, h2, h3, h4 {
   position: relative;
 }
 
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.header-nav a:hover::after {
+  transform: scaleX(1);
+}
+
 .header-nav a:hover,
 .header-nav a.active {
   color: var(--accent);
@@ -534,6 +588,7 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   letter-spacing: 0.3em;
   margin-bottom: 0.75rem;
+  animation: fadeInUp 0.8s ease forwards;
 }
 
 .hero-title {
@@ -542,6 +597,7 @@ h1, h2, h3, h4 {
   font-weight: 300;
   line-height: 1.1;
   margin-bottom: 2.25rem;
+  animation: fadeInUp 0.8s ease 0.15s both;
 }
 
 @media (min-width: 768px) {
@@ -562,12 +618,14 @@ h1, h2, h3, h4 {
   max-width: 36rem;
   margin-bottom: 2.5rem;
   line-height: 1.75;
+  animation: fadeInUp 0.8s ease 0.3s both;
 }
 
 .hero-buttons {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  animation: fadeInUp 0.8s ease 0.45s both;
 }
 
 @media (min-width: 640px) {
@@ -652,6 +710,11 @@ h1, h2, h3, h4 {
 
 .stat-item {
   text-align: center;
+  transition: transform 0.3s;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
 }
 
 .stat-value {
@@ -712,6 +775,12 @@ h1, h2, h3, h4 {
 
 .highlight-item {
   padding: 2.5rem;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.highlight-item:hover {
+  background: var(--secondary);
+  transform: translateY(-1px);
 }
 
 .highlight-item:not(:last-child) {
@@ -949,6 +1018,14 @@ h1, h2, h3, h4 {
   border: 1px solid var(--border);
   color: var(--muted);
   font-size: 0.75rem;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+.service-tag:hover {
+  background: var(--primary);
+  color: var(--accent);
+  border-color: var(--primary);
+  transform: translateY(-1px);
 }
 
 .services-grid-section {
@@ -1110,12 +1187,22 @@ h1, h2, h3, h4 {
   aspect-ratio: 4/3;
   background: var(--secondary);
   overflow: hidden;
+  transition: box-shadow 0.4s;
+}
+
+.story-image:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
 }
 
 .story-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.story-image:hover img {
+  transform: scale(1.04);
 }
 
 .values-section {
@@ -1149,11 +1236,12 @@ h1, h2, h3, h4 {
 .value-item {
   background: var(--white);
   padding: 2rem;
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
 }
 
 .value-item:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
 }
 
 /* Ley de Proximidad: reduce gap between number and title */
@@ -1330,6 +1418,11 @@ h1, h2, h3, h4 {
 .contact-item {
   display: flex;
   gap: 1rem;
+  transition: transform 0.3s;
+}
+
+.contact-item:hover {
+  transform: translateX(4px);
 }
 
 .contact-icon-box {
@@ -1362,10 +1455,14 @@ h1, h2, h3, h4 {
   aspect-ratio: 16/9;
   background: var(--secondary);
   border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  overflow: hidden;
+}
+
+.map-placeholder iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 
 .map-placeholder p {
@@ -1380,6 +1477,33 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
   letter-spacing: 0.3em;
   margin-bottom: 1.5rem;
+}
+
+.cta-agendar {
+  margin-top: 3rem;
+  padding: 2.5rem 2rem;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.cta-agendar .btn-primary {
+  justify-content: center;
+}
+
+.cta-agendar h3 {
+  color: var(--primary);
+  font-size: 1.125rem;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 0.75rem;
+}
+
+.cta-agendar p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 .form-grid-2 {
@@ -1541,6 +1665,14 @@ h1, h2, h3, h4 {
   .strip-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+.strip-item {
+  transition: transform 0.3s;
+}
+
+.strip-item:hover {
+  transform: translateY(-2px);
 }
 
 .strip-item h4 {
@@ -2159,6 +2291,7 @@ svg.icon-book {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  animation: fadeIn 0.25s ease;
 }
 
 .hidden {
@@ -2181,6 +2314,7 @@ svg.icon-book {
   overflow-y: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   position: relative;
+  animation: scaleIn 0.3s ease;
 }
 
 .modal-header {

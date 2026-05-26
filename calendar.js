@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  document.querySelectorAll('.header-cta, .mobile-cta').forEach(button => {
+  document.querySelectorAll('.header-cta, .mobile-cta, .cta-agendar .btn-primary').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
       openModal();
