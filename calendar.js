@@ -15,32 +15,93 @@ document.addEventListener('DOMContentLoaded', function() {
   const nameInput = modal?.querySelector('#appt-name');
   const emailInput = modal?.querySelector('#appt-email');
   const phoneInput = modal?.querySelector('#appt-phone');
+  const modalMessage = document.getElementById('modal-message');
+  const modalSuccess = document.getElementById('modal-success');
+  const appointmentForm = modal?.querySelector('.appointment-form');
+  const calendarHeader = modal?.querySelector('.calendar-header');
+  const calendarWeekdays = modal?.querySelector('.calendar-weekdays');
+  const calendarDays = modal?.querySelector('#calendar-days');
+  const timeSlotsSection = modal?.querySelector('.time-slots');
 
   let currentDate = new Date();
   let selectedDate = null;
   let selectedTime = null;
+  let lastFocusedElement = null;
 
-  // Open modal
+  const focusableSelector = 'button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  function getFocusableElements() {
+    if (!modal) return [];
+    return Array.from(modal.querySelectorAll(focusableSelector)).filter(
+      el => !el.closest('.hidden') && !el.disabled && el.offsetParent !== null
+    );
+  }
+
+  function trapFocus(e) {
+    const focusable = getFocusableElements();
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  function showMessage(text, isError) {
+    if (!modalMessage) return;
+    modalMessage.textContent = text;
+    modalMessage.classList.remove('hidden', 'is-error');
+    if (isError) modalMessage.classList.add('is-error');
+    setTimeout(() => {
+      modalMessage.classList.add('hidden');
+    }, 5000);
+  }
+
+  function resetForm() {
+    if (nameInput) nameInput.value = '';
+    if (emailInput) emailInput.value = '';
+    if (phoneInput) phoneInput.value = '';
+    selectedDate = null;
+    selectedTime = null;
+  }
+
   function openModal() {
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.setAttribute('aria-hidden', 'false');
-      if (modalOverlay) modalOverlay.setAttribute('aria-hidden', 'false');
-      renderCalendar();
-      renderTimeSlots();
-    }
+    if (!modal) return;
+    lastFocusedElement = document.activeElement;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    if (modalOverlay) modalOverlay.setAttribute('aria-hidden', 'false');
+    if (modalMessage) modalMessage.classList.add('hidden');
+    if (modalSuccess) modalSuccess.classList.add('hidden');
+    if (appointmentForm) appointmentForm.classList.remove('hidden');
+    if (calendarHeader) calendarHeader.classList.remove('hidden');
+    if (calendarWeekdays) calendarWeekdays.classList.remove('hidden');
+    if (calendarDays) calendarDays.closest('.calendar-header')?.classList.remove('hidden');
+    if (timeSlotsSection) timeSlotsSection.classList.remove('hidden');
+    if (cancelBtn) cancelBtn.classList.remove('hidden');
+    if (confirmBtn) confirmBtn.classList.remove('hidden');
+    if (modalClose) modalClose.style.display = '';
+    renderCalendar();
+    renderTimeSlots();
+    resetForm();
+    setTimeout(() => nameInput?.focus(), 100);
   }
 
-  // Close modal
   function closeModal() {
-    if (modal) {
-      modal.classList.add('hidden');
-      modal.setAttribute('aria-hidden', 'true');
-      if (modalOverlay) modalOverlay.setAttribute('aria-hidden', 'true');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    if (modalOverlay) modalOverlay.setAttribute('aria-hidden', 'true');
+    if (lastFocusedElement) {
+      lastFocusedElement.focus();
+      lastFocusedElement = null;
     }
   }
 
-  // Event listeners for trigger buttons
   document.querySelectorAll('.header-cta, .mobile-cta').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -48,19 +109,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Close modal events
   if (modalClose) modalClose.addEventListener('click', closeModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
   if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
 
-  // Close on Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
       closeModal();
     }
+    if (e.key === 'Tab' && modal && !modal.classList.contains('hidden')) {
+      trapFocus(e);
+    }
   });
 
-  // Calendar navigation
   if (prevMonthBtn) {
     prevMonthBtn.addEventListener('click', () => {
       currentDate.setMonth(currentDate.getMonth() - 1);
@@ -75,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Render calendar
   function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -95,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     daysContainer.innerHTML = '';
 
-    // Previous month days
     const prevLastDay = new Date(year, month, 0).getDate();
     const prevDaysCount = startingDay === 0 ? 6 : startingDay - 1;
 
@@ -106,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
       daysContainer.appendChild(dayElement);
     }
 
-    // Current month days
     for (let day = 1; day <= lastDay.getDate(); day++) {
       const dayElement = document.createElement('button');
       dayElement.className = 'day-btn';
@@ -127,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
       daysContainer.appendChild(dayElement);
     }
 
-    // Next month days to fill grid
     const totalDays = daysContainer.children.length;
     const remainingDays = 42 - totalDays;
 
@@ -139,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Render time slots
   function renderTimeSlots() {
     if (!timeSlotsContainer) return;
 
@@ -161,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
     timeSlots.forEach(time => {
       const timeElement = document.createElement('button');
       timeElement.className = 'time-btn';
-      timeElement.innerHTML = `<div class="time-number">${time}</div><div class="time-label">hrs</div>`;
+      timeElement.innerHTML = '<div class="time-number">' + time + '</div><div class="time-label">hrs</div>';
 
       if (isToday) {
         const [hours] = time.split(':').map(Number);
@@ -182,41 +238,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Confirm booking
   if (confirmBtn) {
     confirmBtn.addEventListener('click', () => {
+      if (modalMessage) modalMessage.classList.add('hidden');
+
       const name = nameInput?.value.trim() ?? '';
       const email = emailInput?.value.trim() ?? '';
       const phone = phoneInput?.value.trim() ?? '';
 
       if (!name || !email || !phone) {
-        alert('Por favor complete todos los campos obligatorios: nombre, correo y celular.');
+        showMessage('Por favor complete todos los campos obligatorios: nombre, correo y celular.', true);
         return;
       }
 
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(email)) {
-        alert('Por favor ingrese un correo electrónico válido.');
+        showMessage('Por favor ingrese un correo electrónico válido.', true);
         return;
       }
 
       if (!selectedDate || !selectedTime) {
-        alert('Por favor seleccione una fecha y hora para su consulta.');
+        showMessage('Por favor seleccione una fecha y hora para su consulta.', true);
         return;
       }
 
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const formattedDate = selectedDate.toLocaleDateString('es-ES', options);
+      if (appointmentForm) appointmentForm.classList.add('hidden');
+      if (calendarHeader) calendarHeader.classList.add('hidden');
+      if (calendarWeekdays) calendarWeekdays.classList.add('hidden');
+      if (calendarDays) calendarDays.closest('.calendar-header')?.classList.add('hidden');
+      if (timeSlotsSection) timeSlotsSection.classList.add('hidden');
+      if (cancelBtn) cancelBtn.classList.add('hidden');
+      if (confirmBtn) confirmBtn.classList.add('hidden');
+      if (modalClose) modalClose.style.display = 'none';
+      if (modalMessage) modalMessage.classList.add('hidden');
 
-      alert(`¡Cita agendada!\n\nNombre: ${name}\nEmail: ${email}\nTeléfono: ${phone}\nFecha: ${formattedDate}\nHora: ${selectedTime}\n\nUn miembro de nuestro equipo se pondrá en contacto con usted.`);
+      if (modalSuccess) {
+        modalSuccess.classList.remove('hidden');
+        setTimeout(() => modalSuccess.querySelector('button, a')?.focus(), 100);
+      }
 
-      closeModal();
-
-      nameInput.value = '';
-      emailInput.value = '';
-      phoneInput.value = '';
-      selectedDate = null;
-      selectedTime = null;
+      setTimeout(closeModal, 4000);
     });
   }
 

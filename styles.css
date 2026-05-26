@@ -14,7 +14,7 @@
   --accent: #ddd9c5;
   --accent-hover: #c5c0ad;
   --secondary: #fffdf4;
-  --muted: #9fb5bb;
+  --muted: #6e8a91;
   --border: #ddd9c5;
   --border-dark: #c5c0ad;
   --white: #ffffff;
@@ -218,8 +218,8 @@ h1, h2, h3, h4 {
 .bg-secondary { background-color: var(--secondary); }
 .bg-neutral-50 { background-color: var(--secondary); }
 .bg-accent { background-color: var(--accent); }
-.bg-accent\/5 { background-color: rgba(184, 154, 76, 0.05); }
-.bg-accent\/10 { background-color: rgba(184, 154, 76, 0.1); }
+.bg-accent\/5 { background-color: rgba(221, 217, 197, 0.05); }
+.bg-accent\/10 { background-color: rgba(221, 217, 197, 0.1); }
 
 /* Border */
 .border { border-width: 1px; border-style: solid; }
@@ -229,8 +229,8 @@ h1, h2, h3, h4 {
 .border-white\/30 { border-color: rgba(255, 255, 255, 0.3); }
 .border-\[\#e8e4dc\] { border-color: var(--border); }
 .border-\[\#ddd9d0\] { border-color: var(--border-dark); }
-.border-\[\#B89A4C\] { border-color: var(--accent); }
-.border-l-\[\#B89A4C\] { border-left-color: var(--accent); }
+.border-accent { border-color: var(--accent); }
+.border-l-accent { border-left-color: var(--accent); }
 
 /* Colors */
 .text-white\/30 { color: rgba(255, 255, 255, 0.3); }
@@ -2341,13 +2341,13 @@ svg.icon-book {
 
 .time-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
 }
 
 .time-btn {
-  aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: var(--secondary);
@@ -2357,6 +2357,8 @@ svg.icon-book {
   border: none;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  padding: 0.75rem 0.5rem;
+  min-height: 3rem;
 }
 
 .time-btn:hover:not(.disabled) {
@@ -2373,10 +2375,20 @@ svg.icon-book {
 .time-btn.disabled {
   cursor: not-allowed;
   opacity: 0.3;
+  pointer-events: none;
+}
+
+.time-number {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .time-label {
-  font-size: 0.75rem;
+  font-size: 0.625rem;
+  opacity: 0.6;
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .modal-footer {
@@ -2444,4 +2456,49 @@ svg.icon-book {
 .appointment-form .form-group input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+/* Modal message (error/success feedback) */
+.modal-message {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.modal-message.is-error {
+  color: #b33a3a;
+  background: rgba(179, 58, 58, 0.05);
+  border-top: 1px solid rgba(179, 58, 58, 0.15);
+}
+
+.modal-success {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.modal-success .success-icon {
+  width: 3rem;
+  height: 3rem;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+  border-radius: 50%;
+}
+
+.modal-success h3 {
+  color: var(--primary);
+  font-size: 1.25rem;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+
+.modal-success p {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.75;
 }
